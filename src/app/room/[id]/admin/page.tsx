@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { useParams } from 'next/navigation';
-import { io, Socket } from 'socket.io-client';
-import type { RoomConfig } from '@/lib/types';
+import { useState, useEffect, useRef } from "react";
+import { useParams } from "next/navigation";
+import { io, Socket } from "socket.io-client";
+import type { RoomConfig } from "@/lib/types";
 
 export default function AdminPage() {
   const params = useParams();
@@ -12,7 +12,7 @@ export default function AdminPage() {
   const [config, setConfig] = useState<RoomConfig>({
     fontSize: 36,
     speed: 5,
-    bgMode: 'black',
+    bgMode: "black",
   });
   const [connected, setConnected] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
@@ -21,16 +21,16 @@ export default function AdminPage() {
     const socket = io();
     socketRef.current = socket;
 
-    socket.on('connect', () => {
-      socket.emit('room:join', roomId);
+    socket.on("connect", () => {
+      socket.emit("room:join", roomId);
       setConnected(true);
     });
 
-    socket.on('room:config', (newConfig: RoomConfig) => {
+    socket.on("room:config", (newConfig: RoomConfig) => {
       setConfig(newConfig);
     });
 
-    socket.on('disconnect', () => setConnected(false));
+    socket.on("disconnect", () => setConnected(false));
 
     return () => {
       socket.disconnect();
@@ -41,14 +41,14 @@ export default function AdminPage() {
     if (!socketRef.current) return;
     const newConfig = { ...config, ...partial };
     setConfig(newConfig);
-    socketRef.current.emit('room:config:update', {
+    socketRef.current.emit("room:config:update", {
       roomId,
       config: partial,
     });
   };
 
   const getUrl = (path: string) => {
-    if (typeof window === 'undefined') return '';
+    if (typeof window === "undefined") return "";
     return `${window.location.origin}${path}`;
   };
 
@@ -71,7 +71,7 @@ export default function AdminPage() {
           <p className="text-neutral-400 text-sm">ID: {roomId}</p>
         </div>
         <div
-          className={`w-2.5 h-2.5 rounded-full ${connected ? 'bg-green-500' : 'bg-red-500'}`}
+          className={`w-2.5 h-2.5 rounded-full ${connected ? "bg-green-500" : "bg-red-500"}`}
         />
       </div>
 
@@ -155,16 +155,17 @@ export default function AdminPage() {
           <span className="text-sm block mb-2">背景モード</span>
           <div className="flex gap-2">
             {[
-              { label: '黒', value: 'black' },
-              { label: '透過', value: 'transparent' },
+              { label: "黒", value: "black" },
+              { label: "緑", value: "green" },
+              { label: "透過", value: "transparent" },
             ].map((bg) => (
               <button
                 key={bg.value}
                 onClick={() => updateConfig({ bgMode: bg.value })}
                 className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
                   config.bgMode === bg.value
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-neutral-800 text-neutral-300 hover:bg-neutral-700'
+                    ? "bg-blue-600 text-white"
+                    : "bg-neutral-800 text-neutral-300 hover:bg-neutral-700"
                 }`}
               >
                 {bg.label}
@@ -216,7 +217,7 @@ function UrlRow({
         onClick={() => onCopy(path, label)}
         className="px-3 py-1.5 bg-neutral-700 hover:bg-neutral-600 rounded text-xs font-medium transition-colors shrink-0 cursor-pointer"
       >
-        {copied === label ? 'Copied!' : 'Copy'}
+        {copied === label ? "Copied!" : "Copy"}
       </button>
     </div>
   );
