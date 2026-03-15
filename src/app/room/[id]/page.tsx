@@ -61,7 +61,7 @@ export default function PostPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="h-screen flex flex-col overflow-hidden">
       {/* Header */}
       <header className="px-4 py-3 border-b border-neutral-800 flex items-center justify-between">
         <div>
@@ -138,7 +138,7 @@ export default function PostPage() {
             onChange={(e) => setText(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="コメントを入力..."
-            className="flex-1 px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:border-blue-500 text-base"
+            className="flex-1 min-w-0 px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:border-blue-500 text-base"
             autoFocus
           />
           <button
