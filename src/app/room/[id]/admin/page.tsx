@@ -94,12 +94,6 @@ export default function AdminPage() {
             copied={copied}
             onCopy={copyUrl}
           />
-          <UrlRow
-            label="スクリーン(透過)"
-            path={`/room/${roomId}/screen?bg=transparent`}
-            copied={copied}
-            onCopy={copyUrl}
-          />
         </div>
       </section>
 
