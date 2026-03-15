@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { useParams } from 'next/navigation';
-import { io, Socket } from 'socket.io-client';
-import { COLORS, POSITIONS } from '@/lib/types';
+import { useState, useEffect, useRef } from "react";
+import { useParams } from "next/navigation";
+import { io, Socket } from "socket.io-client";
+import { COLORS, POSITIONS } from "@/lib/types";
 
 export default function PostPage() {
   const params = useParams();
   const roomId = params.id as string;
   const socketRef = useRef<Socket | null>(null);
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
   const [color, setColor] = useState<string>(COLORS[0].value);
-  const [position, setPosition] = useState<'flow' | 'top' | 'bottom'>('flow');
-  const [nickname, setNickname] = useState('');
+  const [position, setPosition] = useState<"flow" | "top" | "bottom">("flow");
+  const [nickname, setNickname] = useState("");
   const [connected, setConnected] = useState(false);
   const [lastSentAt, setLastSentAt] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -21,12 +21,12 @@ export default function PostPage() {
     const socket = io();
     socketRef.current = socket;
 
-    socket.on('connect', () => {
-      socket.emit('room:join', roomId);
+    socket.on("connect", () => {
+      socket.emit("room:join", roomId);
       setConnected(true);
     });
 
-    socket.on('disconnect', () => setConnected(false));
+    socket.on("disconnect", () => setConnected(false));
 
     return () => {
       socket.disconnect();
@@ -40,7 +40,7 @@ export default function PostPage() {
     const now = Date.now();
     if (now - lastSentAt < 500) return;
 
-    socketRef.current.emit('comment:post', {
+    socketRef.current.emit("comment:post", {
       roomId,
       text: text.trim(),
       color,
@@ -48,13 +48,13 @@ export default function PostPage() {
       nickname: nickname.trim(),
     });
 
-    setText('');
+    setText("");
     setLastSentAt(now);
     inputRef.current?.focus();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
       e.preventDefault();
       handleSend();
     }
@@ -69,8 +69,8 @@ export default function PostPage() {
           <span className="text-sm text-neutral-400">Room: {roomId}</span>
         </div>
         <div
-          className={`w-2.5 h-2.5 rounded-full ${connected ? 'bg-green-500' : 'bg-red-500'}`}
-          title={connected ? '接続中' : '切断'}
+          className={`w-2.5 h-2.5 rounded-full ${connected ? "bg-green-500" : "bg-red-500"}`}
+          title={connected ? "接続中" : "切断"}
         />
       </header>
 
@@ -87,7 +87,9 @@ export default function PostPage() {
 
         {/* Color picker */}
         <div>
-          <label className="text-xs text-neutral-400 mb-1 block">コメント色</label>
+          <label className="text-xs text-neutral-400 mb-1 block">
+            コメント色
+          </label>
           <div className="flex gap-2 flex-wrap">
             {COLORS.map((c) => (
               <button
@@ -95,8 +97,8 @@ export default function PostPage() {
                 onClick={() => setColor(c.value)}
                 className={`w-9 h-9 rounded-full border-2 transition-all cursor-pointer ${
                   color === c.value
-                    ? 'border-white scale-110'
-                    : 'border-neutral-600'
+                    ? "border-white scale-110"
+                    : "border-neutral-600"
                 }`}
                 style={{ backgroundColor: c.value }}
                 title={c.label}
@@ -107,7 +109,9 @@ export default function PostPage() {
 
         {/* Position picker */}
         <div>
-          <label className="text-xs text-neutral-400 mb-1 block">表示位置</label>
+          <label className="text-xs text-neutral-400 mb-1 block">
+            表示位置
+          </label>
           <div className="flex gap-2">
             {POSITIONS.map((p) => (
               <button
@@ -115,8 +119,8 @@ export default function PostPage() {
                 onClick={() => setPosition(p.value)}
                 className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
                   position === p.value
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-neutral-800 text-neutral-300 hover:bg-neutral-700'
+                    ? "bg-blue-600 text-white"
+                    : "bg-neutral-800 text-neutral-300 hover:bg-neutral-700"
                 }`}
               >
                 {p.label}
