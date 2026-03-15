@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useRef, useEffect, useCallback } from 'react';
+import { useRef, useEffect, useCallback } from "react";
 
 export interface CommentData {
   id: string;
   text: string;
   color: string;
-  position: 'flow' | 'top' | 'bottom';
+  position: "flow" | "top" | "bottom";
 }
 
 export interface CanvasConfig {
@@ -35,7 +35,8 @@ interface FixedComment {
   expireAt: number;
 }
 
-const FONT_FAMILY = '"Hiragino Kaku Gothic Pro", "Yu Gothic", "Noto Sans JP", Arial, sans-serif';
+const FONT_FAMILY =
+  '"Hiragino Kaku Gothic Pro", "Yu Gothic", "Noto Sans JP", Arial, sans-serif';
 
 export function useCommentCanvas(config: CanvasConfig) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -48,7 +49,7 @@ export function useCommentCanvas(config: CanvasConfig) {
   const addComment = useCallback((data: CommentData) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     const dpr = window.devicePixelRatio || 1;
@@ -61,7 +62,7 @@ export function useCommentCanvas(config: CanvasConfig) {
     const textWidth = ctx.measureText(data.text).width;
     ctx.restore();
 
-    if (data.position === 'flow') {
+    if (data.position === "flow") {
       const laneHeight = fontSize * 1.4;
       const numLanes = Math.max(1, Math.floor(h / laneHeight));
 
@@ -89,7 +90,7 @@ export function useCommentCanvas(config: CanvasConfig) {
         speed: pxPerFrame,
         lane: bestLane,
       });
-    } else if (data.position === 'top') {
+    } else if (data.position === "top") {
       const slotHeight = fontSize * 1.4;
       const usedSlots = new Set(topRef.current.map((c) => c.slot));
       let slot = 0;
@@ -113,7 +114,7 @@ export function useCommentCanvas(config: CanvasConfig) {
         id: data.id,
         text: data.text,
         color: data.color,
-        y: h - slot * slotHeight - 10,
+        y: h - slot * slotHeight - fontSize,
         slot,
         expireAt: Date.now() + 3000,
       });
@@ -134,15 +135,15 @@ export function useCommentCanvas(config: CanvasConfig) {
     };
 
     resize();
-    window.addEventListener('resize', resize);
-    return () => window.removeEventListener('resize', resize);
+    window.addEventListener("resize", resize);
+    return () => window.removeEventListener("resize", resize);
   }, []);
 
   // Animation loop
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     let frameId: number;
@@ -157,22 +158,22 @@ export function useCommentCanvas(config: CanvasConfig) {
       ctx.clearRect(0, 0, w, h);
 
       // Background
-      if (bgMode !== 'transparent') {
-        ctx.fillStyle = bgMode === 'black' ? '#000000' : bgMode;
+      if (bgMode !== "transparent") {
+        ctx.fillStyle = bgMode === "black" ? "#000000" : bgMode;
         ctx.fillRect(0, 0, w, h);
       }
 
       ctx.font = `bold ${fontSize}px ${FONT_FAMILY}`;
-      ctx.lineJoin = 'round';
-      ctx.textBaseline = 'middle';
+      ctx.lineJoin = "round";
+      ctx.textBaseline = "middle";
 
       // Flowing comments
-      ctx.textAlign = 'left';
+      ctx.textAlign = "left";
       flowRef.current = flowRef.current.filter((c) => {
         c.x -= c.speed;
         if (c.x + c.width < 0) return false;
 
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.strokeStyle = "rgba(0, 0, 0, 0.7)";
         ctx.lineWidth = 3;
         ctx.strokeText(c.text, c.x, c.y);
         ctx.fillStyle = c.color;
@@ -182,10 +183,10 @@ export function useCommentCanvas(config: CanvasConfig) {
 
       // Top fixed
       const now = Date.now();
-      ctx.textAlign = 'center';
+      ctx.textAlign = "center";
       topRef.current = topRef.current.filter((c) => {
         if (now >= c.expireAt) return false;
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.strokeStyle = "rgba(0, 0, 0, 0.7)";
         ctx.lineWidth = 3;
         ctx.strokeText(c.text, w / 2, c.y);
         ctx.fillStyle = c.color;
@@ -196,7 +197,7 @@ export function useCommentCanvas(config: CanvasConfig) {
       // Bottom fixed
       bottomRef.current = bottomRef.current.filter((c) => {
         if (now >= c.expireAt) return false;
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.strokeStyle = "rgba(0, 0, 0, 0.7)";
         ctx.lineWidth = 3;
         ctx.strokeText(c.text, w / 2, c.y);
         ctx.fillStyle = c.color;
@@ -204,7 +205,7 @@ export function useCommentCanvas(config: CanvasConfig) {
         return true;
       });
 
-      ctx.textAlign = 'left';
+      ctx.textAlign = "left";
       frameId = requestAnimationFrame(render);
     };
 
